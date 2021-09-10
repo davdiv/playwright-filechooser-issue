@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Test page</title>
+  </head>
+  <body>
+    <button id="openFile">Open a file</button>
+    <div id="fileNames"></div>
+    <script>
+      const openFiles = (files) => {
+        fileNames = [];
+        for (const file of files) {
+          fileNames.push(file.name);
+        }
+        document.getElementById("fileNames").textContent = fileNames.join(", ");
+      };
+
+      let fileInput;
+      const getFileInput = () => {
+        if (!fileInput) {
+          fileInput = document.createElement("input");
+          fileInput.setAttribute("type", "file");
+          fileInput.setAttribute("multiple", "true");
+          fileInput.style.display = "none";
+          document.body.appendChild(fileInput);
+          fileInput.addEventListener("change", () => {
+            const files = fileInput.files;
+            if (files) {
+              openFiles([...files]);
+            }
+          });
+        }
+        fileInput.value = null;
+        return fileInput;
+      };
+
+      document.getElementById("openFile").onclick = async function () {
+        if (window.showOpenFilePicker) {
+          console.log("using showOpenFilePicker");
+          openFiles(await window.showOpenFilePicker({ multiple: true }));
+        } else {
+          console.log("using input type=file");
+          getFileInput().click();
+        }
+      };
+    </script>
+  </body>
+</html>
